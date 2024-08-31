@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
 
 const props = defineProps({
   id: String,
@@ -10,11 +9,9 @@ const props = defineProps({
   areas: Array
 })
 
-const route = useRoute()
-
 const fullname = computed(() => `${props.firstName} ${props.lastName}`)
-const coachContactLink = computed(() => `${route.path}/coaches/${props.id}/contact`)
-const coachDetailsLink = computed(() => `${route.path}/coaches/${props.id}`)
+const coachContactLink = computed(() => `/coaches/${props.id}/contact`)
+const coachDetailsLink = computed(() => `/coaches/${props.id}`)
 </script>
 
 <template>
@@ -22,11 +19,11 @@ const coachDetailsLink = computed(() => `${route.path}/coaches/${props.id}`)
     <h3>{{ fullname }}</h3>
     <h4>${{ rate }}/hour</h4>
     <div>
-      <span v-for="area in areas" :key="area">{{ area }}</span>
+      <BaseBadge v-for="area in areas" :key="area" :type="area" :title="area"></BaseBadge>
     </div>
     <div class="actions">
-      <RouterLink :to="coachContactLink">Contact</RouterLink>
-      <RouterLink :to="coachDetailsLink">View Details</RouterLink>
+      <BaseButton mode="outline" isLink :to="coachContactLink">Contact</BaseButton>
+      <BaseButton isLink :to="coachDetailsLink">View Details</BaseButton>
     </div>
   </li>
 </template>

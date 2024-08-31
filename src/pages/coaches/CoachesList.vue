@@ -1,5 +1,4 @@
 <script setup>
-import { RouterLink } from 'vue-router'
 import { useCoachesStore } from '@/stores/coaches'
 import CoachItem from '@/components/coaches/CoachItem.vue'
 
@@ -8,25 +7,27 @@ const { coaches, hasCoaches } = coachesStore
 </script>
 
 <template>
-  <section>Filter</section>
-  <section>
-    <div class="controls">
-      <button>Refresh</button>
-      <RouterLink to="/register">Register as Coach</RouterLink>
-    </div>
-    <ul v-if="hasCoaches">
-      <CoachItem
-        v-for="coach in coaches"
-        :key="coach.id"
-        :id="coach.id"
-        :first-name="coach.firstName"
-        :last-name="coach.lastName"
-        :rate="coach.hourlyRate"
-        :areas="coach.areas"
-      />
-    </ul>
-    <h3 v-else>No coaches found.</h3>
-  </section>
+  <BaseCard>
+    <section>Filter</section>
+    <section>
+      <div class="controls">
+        <BaseButton mode="outline">Refresh</BaseButton>
+        <BaseButton isLink to="/register">Register as Coach</BaseButton>
+      </div>
+      <ul v-if="hasCoaches">
+        <CoachItem
+          v-for="coach in coaches"
+          :key="coach.id"
+          :id="coach.id"
+          :first-name="coach.firstName"
+          :last-name="coach.lastName"
+          :rate="coach.hourlyRate"
+          :areas="coach.areas"
+        />
+      </ul>
+      <h3 v-else>No coaches found.</h3>
+    </section>
+  </BaseCard>
 </template>
 
 <style scoped>

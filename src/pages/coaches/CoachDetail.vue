@@ -1,9 +1,7 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-</script>
+<script setup></script>
 
 <template>
   Ini adalah CoachDetail
   <RouterView />
-  <RouterLink to="/coaches/c1/contact">Contact</RouterLink>
+  <BaseButton isLink to="/coaches/c1/contact">Contact</BaseButton>
 </template>
