@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const props = defineProps({
   id: String,
   firstName: String,
@@ -10,8 +12,8 @@ const props = defineProps({
 })
 
 const fullname = computed(() => `${props.firstName} ${props.lastName}`)
-const coachContactLink = computed(() => `/coaches/${props.id}/contact`)
-const coachDetailsLink = computed(() => `/coaches/${props.id}`)
+const coachContactLink = computed(() => `${route.path}/${props.id}/contact`)
+const coachDetailsLink = computed(() => `${route.path}/${props.id}`)
 </script>
 
 <template>

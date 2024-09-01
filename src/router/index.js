@@ -20,6 +20,7 @@ const router = createRouter({
     {
       path: '/coaches/:id',
       component: () => import('../pages/coaches/CoachDetail.vue'),
+      props: true,
       children: [{ path: 'contact', component: () => import('../pages/requests/ContactCoach.vue') }]
     },
     {
