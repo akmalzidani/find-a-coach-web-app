@@ -1,27 +1,37 @@
 <script setup>
 import { ref } from 'vue'
+import useRequestsStore from '@/store/requests'
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
+
+const requestsStore = useRequestsStore()
+const { addRequest } = requestsStore
 
 const formValues = ref({
-  email: {
-    val: '',
-    isValid: true
-  },
-  message: {
-    val: '',
-    isValid: true
-  },
+  email: '',
+  message: '',
   formIsValid: true
 })
 
 const submitForm = () => {
   formValues.value.formIsValid = true
   if (
-    formValues.value.email.val === '' ||
-    !formValues.value.email.val.includes('@') ||
-    formValues.value.message.val === ''
+    formValues.value.email === '' ||
+    !formValues.value.email.includes('@') ||
+    formValues.value.message === ''
   ) {
     formValues.value.formIsValid = false
   }
+
+  addRequest({
+    email: formValues.value.email,
+    message: formValues.value.message,
+    coachId: route.params.id
+  })
+
+  router.replace('/coaches')
 }
 </script>
 
@@ -29,16 +39,11 @@ const submitForm = () => {
   <form @submit.prevent="submitForm">
     <div class="form-control">
       <label for="email">Your E-Mail</label>
-      <input type="email" id="email" v-model.trim="formValues.email.val" />
+      <input type="email" id="email" v-model.trim="formValues.email" />
     </div>
     <div class="form-control">
       <label for="message">Message</label>
-      <textarea
-        name="message"
-        id="message"
-        rows="5"
-        v-model.trim="formValues.message.val"
-      ></textarea>
+      <textarea name="message" id="message" rows="5" v-model.trim="formValues.message"></textarea>
     </div>
     <p v-if="!formValues.formIsValid">Please enter a valid email and non-empty message.</p>
     <div class="actions">
