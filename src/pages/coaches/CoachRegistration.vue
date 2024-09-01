@@ -1,5 +1,12 @@
-<script setup></script>
+<script setup>
+import CoachForm from '@/components/coaches/CoachForm.vue'
+</script>
 
 <template>
-  <div>Ini adalah CoachRegistration</div>
+  <section>
+    <BaseCard>
+      <h2>Register as a coach now!</h2>
+      <CoachForm />
+    </BaseCard>
+  </section>
 </template>
