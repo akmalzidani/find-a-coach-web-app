@@ -1,7 +1,11 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { useUsersStore } from './users'
 
 export const useCoachesStore = defineStore('coaches', () => {
+  const usersStore = useUsersStore()
+  const { getUserId } = usersStore
+
   const coaches = ref([
     {
       id: 'c1',
@@ -24,7 +28,7 @@ export const useCoachesStore = defineStore('coaches', () => {
   ])
   const getCoaches = computed(() => coaches.value)
   const hasCoaches = computed(() => getCoaches.value.length > 0)
-  const isCoach = computed(() => (id) => getCoaches.value.some((coach) => coach.id === id))
+  const isCoach = computed(() => getCoaches.value.some((coach) => coach.id === getUserId))
 
   function registerCoach(data) {
     const coachData = {

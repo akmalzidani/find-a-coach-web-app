@@ -34,7 +34,7 @@ const filteredCoaches = computed(() => {
     <section>
       <div class="controls">
         <BaseButton mode="outline">Refresh</BaseButton>
-        <BaseButton v-if="!isCoach('c3')" isLink to="/register">Register as Coach</BaseButton>
+        <BaseButton v-if="!isCoach" isLink to="/register">Register as Coach</BaseButton>
       </div>
       <ul v-if="hasCoaches">
         <CoachItem
