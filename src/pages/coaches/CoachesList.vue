@@ -5,7 +5,7 @@ import CoachFilter from '@/components/coaches/CoachFilter.vue'
 import { ref, computed } from 'vue'
 
 const coachesStore = useCoachesStore()
-const { getCoaches, hasCoaches } = coachesStore
+const { getCoaches, hasCoaches, isCoach } = coachesStore
 
 const activeFilters = ref({
   frontend: true,
@@ -34,7 +34,7 @@ const filteredCoaches = computed(() => {
     <section>
       <div class="controls">
         <BaseButton mode="outline">Refresh</BaseButton>
-        <BaseButton isLink to="/register">Register as Coach</BaseButton>
+        <BaseButton v-if="!isCoach('c3')" isLink to="/register">Register as Coach</BaseButton>
       </div>
       <ul v-if="hasCoaches">
         <CoachItem

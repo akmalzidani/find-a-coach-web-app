@@ -14,7 +14,7 @@ const selectedCoach = computed(() => getCoaches.find((coach) => coach.id === pro
 
 const data = computed(() => ({
   fullName: `${selectedCoach.value.firstName} ${selectedCoach.value.lastName}`,
-  contactLink: `${route.path}/${props.id}/contact`,
+  contactLink: `${route.path}/contact`,
   areas: selectedCoach.value.areas,
   rate: selectedCoach.value.hourlyRate,
   description: selectedCoach.value.description

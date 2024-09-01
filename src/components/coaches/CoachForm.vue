@@ -9,6 +9,8 @@ const formValues = ref({
   areas: []
 })
 
+const emit = defineEmits(['save-data'])
+
 const submitForm = () => {
   const formData = {
     first: formValues.value.firstName,
@@ -18,7 +20,7 @@ const submitForm = () => {
     areas: formValues.value.areas
   }
 
-  console.log(formData)
+  emit('save-data', formData)
 }
 </script>
 
