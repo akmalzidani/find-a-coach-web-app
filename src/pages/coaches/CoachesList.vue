@@ -1,14 +1,36 @@
 <script setup>
 import { useCoachesStore } from '@/stores/coaches'
 import CoachItem from '@/components/coaches/CoachItem.vue'
+import CoachFilter from '@/components/coaches/CoachFilter.vue'
+import { ref, computed } from 'vue'
 
 const coachesStore = useCoachesStore()
-const { coaches, hasCoaches } = coachesStore
+const { getCoaches, hasCoaches } = coachesStore
+
+const activeFilters = ref({
+  frontend: true,
+  backend: true,
+  career: true
+})
+
+const setFilters = (updatedFilters) => {
+  activeFilters.value = updatedFilters
+}
+
+const filteredCoaches = computed(() => {
+  const coaches = getCoaches
+  return coaches.filter(
+    (coach) =>
+      (activeFilters.value.frontend && coach.areas.includes('frontend')) ||
+      (activeFilters.value.backend && coach.areas.includes('backend')) ||
+      (activeFilters.value.career && coach.areas.includes('career'))
+  )
+})
 </script>
 
 <template>
   <BaseCard>
-    <section>Filter</section>
+    <section><CoachFilter @change-filter="setFilters" /></section>
     <section>
       <div class="controls">
         <BaseButton mode="outline">Refresh</BaseButton>
@@ -16,7 +38,7 @@ const { coaches, hasCoaches } = coachesStore
       </div>
       <ul v-if="hasCoaches">
         <CoachItem
-          v-for="coach in coaches"
+          v-for="coach in filteredCoaches"
           :key="coach.id"
           :id="coach.id"
           :first-name="coach.firstName"
