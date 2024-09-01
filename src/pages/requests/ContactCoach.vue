@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import useRequestsStore from '@/store/requests'
 import { useRoute, useRouter } from 'vue-router'
+import { useRequestsStore } from '@/stores/requests'
 
 const route = useRoute()
 const router = useRouter()
