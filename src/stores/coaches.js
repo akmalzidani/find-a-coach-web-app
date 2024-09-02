@@ -30,16 +30,30 @@ export const useCoachesStore = defineStore('coaches', () => {
   const hasCoaches = computed(() => getCoaches.value.length > 0)
   const isCoach = computed(() => getCoaches.value.some((coach) => coach.id === getUserId))
 
-  function registerCoach(data) {
+  const registerCoach = async function (data) {
+    const userId = getUserId
     const coachData = {
-      id: 'c3',
       firstName: data.first,
       lastName: data.last,
       areas: data.areas,
       description: data.desc,
       hourlyRate: data.rate
     }
-    coaches.value.push(coachData)
+
+    const response = await fetch(
+      `https://find-a-coach-web-app-328d3-default-rtdb.asia-southeast1.firebasedatabase.app/coaches/${userId}.json`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(coachData)
+      }
+    )
+
+    if (!response.ok) {
+      const error = new Error('Failed to register coach')
+      console.error(error)
+    }
+
+    coaches.value.push({ ...coachData, id: userId })
   }
 
   return { coaches, getCoaches, hasCoaches, registerCoach, isCoach }
