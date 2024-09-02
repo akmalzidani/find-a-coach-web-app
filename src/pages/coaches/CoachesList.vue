@@ -5,17 +5,9 @@ import CoachFilter from '@/components/coaches/CoachFilter.vue'
 import { ref, computed } from 'vue'
 
 const coachesStore = useCoachesStore()
-const { getCoaches, hasCoaches, isCoach } = coachesStore
+const { getCoaches, hasCoaches, isCoach, loadCoaches } = coachesStore
 
-const activeFilters = ref({
-  frontend: true,
-  backend: true,
-  career: true
-})
-
-const setFilters = (updatedFilters) => {
-  activeFilters.value = updatedFilters
-}
+loadCoaches()
 
 const filteredCoaches = computed(() => {
   const coaches = getCoaches
@@ -26,6 +18,16 @@ const filteredCoaches = computed(() => {
       (activeFilters.value.career && coach.areas.includes('career'))
   )
 })
+
+const activeFilters = ref({
+  frontend: true,
+  backend: true,
+  career: true
+})
+
+const setFilters = (updatedFilters) => {
+  activeFilters.value = updatedFilters
+}
 </script>
 
 <template>
@@ -33,7 +35,7 @@ const filteredCoaches = computed(() => {
     <section><CoachFilter @change-filter="setFilters" /></section>
     <section>
       <div class="controls">
-        <BaseButton mode="outline">Refresh</BaseButton>
+        <BaseButton mode="outline" @click="loadCoaches">Refresh</BaseButton>
         <BaseButton v-if="!isCoach" isLink to="/register">Register as Coach</BaseButton>
       </div>
       <ul v-if="hasCoaches">
