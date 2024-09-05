@@ -1,7 +1,7 @@
 <script setup>
 import { useCoachesStore } from '@/stores/coaches'
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 const props = defineProps({ id: { type: String, required: true } })
@@ -9,9 +9,21 @@ const props = defineProps({ id: { type: String, required: true } })
 const route = useRoute()
 
 const coachesStore = useCoachesStore()
+const { loadCoaches } = coachesStore
 const { coaches } = storeToRefs(coachesStore)
 
-const selectedCoach = computed(() => coaches.find((coach) => coach.id === props.id))
+const isLoading = ref()
+
+onMounted(async () => {
+  await loadData()
+})
+
+const loadData = async () => {
+  isLoading.value = true
+  await loadCoaches()
+  isLoading.value = false
+}
+const selectedCoach = computed(() => coaches.value.find((coach) => coach.id === props.id))
 
 const data = computed(() => ({
   fullName: `${selectedCoach.value.firstName} ${selectedCoach.value.lastName}`,
@@ -23,25 +35,39 @@ const data = computed(() => ({
 </script>
 
 <template>
-  <section>
+  <div v-if="isLoading">
     <BaseCard>
-      <h2>{{ data.fullName }}</h2>
-      <h3>${{ data.rate }}/hour</h3>
+      <div>
+        <BaseSpinner />
+      </div>
     </BaseCard>
-  </section>
-  <section>
+  </div>
+  <div v-else-if="!selectedCoach">
     <BaseCard>
-      <header>
-        <h2>Intersted? Reach out now!</h2>
-        <BaseButton isLink :to="data.contactLink">Contact</BaseButton>
-      </header>
-      <RouterView />
+      <h2>Coach not found</h2>
     </BaseCard>
-  </section>
-  <section>
-    <BaseCard>
-      <BaseBadge v-for="area in data.areas" :key="area" :type="area" :title="area"> </BaseBadge>
-      <p>{{ data.description }}</p>
-    </BaseCard>
-  </section>
+  </div>
+  <div v-else>
+    <section>
+      <BaseCard>
+        <h2>{{ data.fullName }}</h2>
+        <h3>${{ data.rate }}/hour</h3>
+      </BaseCard>
+    </section>
+    <section>
+      <BaseCard>
+        <header>
+          <h2>Interested? Reach out now!</h2>
+          <BaseButton isLink :to="data.contactLink">Contact</BaseButton>
+        </header>
+        <RouterView />
+      </BaseCard>
+    </section>
+    <section>
+      <BaseCard>
+        <BaseBadge v-for="area in data.areas" :key="area" :type="area" :title="area"> </BaseBadge>
+        <p>{{ data.description }}</p>
+      </BaseCard>
+    </section>
+  </div>
 </template>

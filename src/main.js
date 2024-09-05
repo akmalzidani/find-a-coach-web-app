@@ -6,6 +6,7 @@ import BaseCard from './components/ui/BaseCard.vue'
 import BaseButton from './components/ui/BaseButton.vue'
 import BaseBadge from './components/ui/BaseBadge.vue'
 import BaseSpinner from './components/ui/BaseSpinner.vue'
+import BaseDialog from './components/ui/BaseDialog.vue'
 
 import App from './App.vue'
 import router from './router'
@@ -19,5 +20,6 @@ app
   .component('BaseButton', BaseButton)
   .component('BaseBadge', BaseBadge)
   .component('BaseSpinner', BaseSpinner)
+  .component('BaseDialog', BaseDialog)
 
 app.mount('#app')

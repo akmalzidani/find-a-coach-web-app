@@ -28,11 +28,31 @@ export const useCoachesStore = defineStore('coaches', () => {
     }
   ])
 
+  const activeFilters = ref({
+    frontend: true,
+    backend: true,
+    career: true
+  })
+
   //-------- getters
   const hasCoaches = computed(() => coaches.value.length > 0)
+
   const isCoach = computed(() => coaches.value.some((coach) => coach.id === userId.value))
 
+  const filteredCoaches = computed(() => {
+    return coaches.value.filter(
+      (coach) =>
+        (activeFilters.value.frontend && coach.areas.includes('frontend')) ||
+        (activeFilters.value.backend && coach.areas.includes('backend')) ||
+        (activeFilters.value.career && coach.areas.includes('career'))
+    )
+  })
+
   //-------- actions
+  const setFilters = (updatedFilters) => {
+    activeFilters.value = updatedFilters
+  }
+
   const setCoaches = function (data) {
     coaches.value = data
   }
@@ -45,7 +65,7 @@ export const useCoachesStore = defineStore('coaches', () => {
 
     if (!response.ok) {
       const error = new Error(responseData.message || 'Failed to fetch coaches')
-      console.error(error)
+      throw error
     }
 
     const loadedCoaches = []
@@ -62,12 +82,8 @@ export const useCoachesStore = defineStore('coaches', () => {
       loadedCoaches.push(coach)
     }
     setCoaches(loadedCoaches)
-    console.log(userId.value)
-    console.log('punya has coaches?', hasCoaches.value)
-    console.log(isCoach.value)
     return loadedCoaches
   }
-  console.log('sebelum dikasih loaded data:', coaches.value)
   const registerCoach = async function (data) {
     const id = userId
     const coachData = {
@@ -94,5 +110,5 @@ export const useCoachesStore = defineStore('coaches', () => {
     coaches.value.push({ ...coachData, id: id })
   }
 
-  return { coaches, hasCoaches, isCoach, registerCoach, loadCoaches, setCoaches }
+  return { coaches, filteredCoaches, hasCoaches, isCoach, registerCoach, loadCoaches, setFilters }
 })

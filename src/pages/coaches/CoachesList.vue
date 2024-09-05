@@ -2,46 +2,40 @@
 import { useCoachesStore } from '@/stores/coaches'
 import CoachItem from '@/components/coaches/CoachItem.vue'
 import CoachFilter from '@/components/coaches/CoachFilter.vue'
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 
 const coachesStore = useCoachesStore()
-const { loadCoaches } = coachesStore
-const { coaches, hasCoaches, isCoach } = storeToRefs(coachesStore)
+const { loadCoaches, setFilters } = coachesStore
+const { filteredCoaches, hasCoaches, isCoach } = storeToRefs(coachesStore)
 
 const isLoading = ref()
+const error = ref(null)
 
 onMounted(async () => {
   loadData()
 })
 
-const filteredCoaches = computed(() => {
-  return coaches.value.filter(
-    (coach) =>
-      (activeFilters.value.frontend && coach.areas.includes('frontend')) ||
-      (activeFilters.value.backend && coach.areas.includes('backend')) ||
-      (activeFilters.value.career && coach.areas.includes('career'))
-  )
-})
-
-const activeFilters = ref({
-  frontend: true,
-  backend: true,
-  career: true
-})
-
-const setFilters = (updatedFilters) => {
-  activeFilters.value = updatedFilters
-}
-
 const loadData = async () => {
   isLoading.value = true
-  await loadCoaches()
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    await loadCoaches()
+  } catch (err) {
+    error.value = err.message || 'Something went wrong!'
+  }
   isLoading.value = false
+}
+
+const handleError = () => {
+  error.value = null
 }
 </script>
 
 <template>
+  <BaseDialog :show="!!error" title="An error occured!" @close="handleError">
+    <p>{{ error }}</p>
+  </BaseDialog>
   <section>
     <CoachFilter @change-filter="setFilters" />
   </section>
