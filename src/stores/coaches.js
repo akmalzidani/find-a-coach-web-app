@@ -2,6 +2,8 @@ import { ref, computed } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useUsersStore } from './users'
 
+const baseURL = import.meta.env.VITE_BASE_URL
+
 export const useCoachesStore = defineStore('coaches', () => {
   const usersStore = useUsersStore()
   const { userId } = storeToRefs(usersStore)
@@ -58,9 +60,7 @@ export const useCoachesStore = defineStore('coaches', () => {
   }
 
   const loadCoaches = async function () {
-    const response = await fetch(
-      `https://find-a-coach-web-app-328d3-default-rtdb.asia-southeast1.firebasedatabase.app/coaches.json`
-    )
+    const response = await fetch(`${baseURL}/coaches.json`)
     const responseData = await response.json()
 
     if (!response.ok) {
@@ -85,7 +85,7 @@ export const useCoachesStore = defineStore('coaches', () => {
     return loadedCoaches
   }
   const registerCoach = async function (data) {
-    const id = userId
+    const id = userId.value
     const coachData = {
       firstName: data.first,
       lastName: data.last,
@@ -94,13 +94,10 @@ export const useCoachesStore = defineStore('coaches', () => {
       hourlyRate: data.rate
     }
 
-    const response = await fetch(
-      `https://find-a-coach-web-app-328d3-default-rtdb.asia-southeast1.firebasedatabase.app/coaches/${userId}.json`,
-      {
-        method: 'PUT',
-        body: JSON.stringify(coachData)
-      }
-    )
+    const response = await fetch(`${baseURL}/coaches/${userId.value}.json`, {
+      method: 'PUT',
+      body: JSON.stringify(coachData)
+    })
 
     if (!response.ok) {
       const error = new Error('Failed to register coach')

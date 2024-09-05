@@ -1,18 +1,47 @@
 <script setup>
 import RequestItem from '@/components/requests/RequestItem.vue'
 import { useRequestsStore } from '@/stores/requests'
+import { storeToRefs } from 'pinia'
+import { ref, onMounted } from 'vue'
 
 const requestsStore = useRequestsStore()
-const { getRequests, hasRequests } = requestsStore
+const { getRequests, hasRequests } = storeToRefs(requestsStore)
+
+const isLoading = ref(false)
+const error = ref(null)
+
+onMounted(async () => {
+  await loadData()
+})
+
+const loadData = async () => {
+  isLoading.value = true
+  try {
+    await requestsStore.loadRequests()
+  } catch (error) {
+    error.value = error.message || 'Something went wrong!'
+  }
+  isLoading.value = false
+}
+
+const handleError = () => {
+  error.value = null
+}
 </script>
 
 <template>
+  <BaseDialog :show="!!error" title="An error occured!" @close="handleError = null">
+    <p>{{ error }}</p></BaseDialog
+  >
   <section>
     <BaseCard>
       <header>
         <h2>Request Received</h2>
       </header>
-      <ul v-if="hasRequests">
+      <div v-if="isLoading">
+        <BaseSpinner />
+      </div>
+      <ul v-else-if="hasRequests && !isLoading">
         <RequestItem
           v-for="request in getRequests"
           :key="request.id"
