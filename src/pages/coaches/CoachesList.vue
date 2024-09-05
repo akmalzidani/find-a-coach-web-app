@@ -2,15 +2,19 @@
 import { useCoachesStore } from '@/stores/coaches'
 import CoachItem from '@/components/coaches/CoachItem.vue'
 import CoachFilter from '@/components/coaches/CoachFilter.vue'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 const coachesStore = useCoachesStore()
-const { getCoaches, hasCoaches, isCoach, loadCoaches } = coachesStore
+const { coaches, hasCoaches, isCoach, loadCoaches } = coachesStore
 
-loadCoaches()
+const isLoading = ref(true)
+
+onMounted(async () => {
+  await loadCoaches()
+  isLoading.value = false
+})
 
 const filteredCoaches = computed(() => {
-  const coaches = getCoaches
   return coaches.filter(
     (coach) =>
       (activeFilters.value.frontend && coach.areas.includes('frontend')) ||
@@ -32,13 +36,20 @@ const setFilters = (updatedFilters) => {
 
 <template>
   <BaseCard>
-    <section><CoachFilter @change-filter="setFilters" /></section>
+    <section v-if="!isLoading">
+      <CoachFilter @change-filter="setFilters" />
+    </section>
+    <section v-else>
+      <div>Loading...</div>
+    </section>
     <section>
       <div class="controls">
         <BaseButton mode="outline" @click="loadCoaches">Refresh</BaseButton>
-        <BaseButton v-if="!isCoach" isLink to="/register">Register as Coach</BaseButton>
+        <BaseButton v-if="!isCoach && !isLoading" isLink to="/register"
+          >Register as Coach</BaseButton
+        >
       </div>
-      <ul v-if="hasCoaches">
+      <ul v-if="hasCoaches && !isLoading">
         <CoachItem
           v-for="coach in filteredCoaches"
           :key="coach.id"

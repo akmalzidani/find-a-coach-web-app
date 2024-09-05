@@ -4,11 +4,11 @@ import { useUsersStore } from './users'
 
 export const useRequestsStore = defineStore('requests', () => {
   const usersStore = useUsersStore()
-  const { getUserId } = usersStore
+  const { userId } = usersStore
 
   const requests = ref([])
 
-  const getRequests = computed(() => requests.value.filter((req) => req.coachId === getUserId))
+  const getRequests = computed(() => requests.value.filter((req) => req.coachId === userId))
   const hasRequests = computed(() => getRequests.value && getRequests.value.length > 0)
 
   function addRequest(data) {

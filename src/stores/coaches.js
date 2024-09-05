@@ -4,7 +4,7 @@ import { useUsersStore } from './users'
 
 export const useCoachesStore = defineStore('coaches', () => {
   const usersStore = useUsersStore()
-  const { getUserId } = usersStore
+  const { userId } = usersStore
 
   //-------- state
   const coaches = ref([
@@ -29,9 +29,8 @@ export const useCoachesStore = defineStore('coaches', () => {
   ])
 
   //-------- getters
-  const getCoaches = computed(() => coaches.value)
-  const hasCoaches = computed(() => getCoaches.value.length > 0)
-  const isCoach = computed(() => getCoaches.value.some((coach) => coach.id === getUserId))
+  const hasCoaches = computed(() => coaches.value.length > 0)
+  const isCoach = computed(() => coaches.value.some((coach) => coach.id === userId))
 
   //-------- actions
   const setCoaches = function (data) {
@@ -49,7 +48,7 @@ export const useCoachesStore = defineStore('coaches', () => {
       console.error(error)
     }
 
-    const coaches = []
+    const loadedCoaches = []
 
     for (const key in responseData) {
       const coach = {
@@ -60,13 +59,17 @@ export const useCoachesStore = defineStore('coaches', () => {
         description: responseData[key].description,
         hourlyRate: responseData[key].hourlyRate
       }
-      coaches.push(coach)
+      loadedCoaches.push(coach)
     }
-
-    setCoaches(coaches)
+    setCoaches(loadedCoaches)
+    console.log(userId)
+    console.log('punya has coaches?', hasCoaches.value)
+    console.log(isCoach.value)
+    return loadedCoaches
   }
+  console.log('sebelum dikasih loaded data:', coaches.value)
   const registerCoach = async function (data) {
-    const userId = getUserId
+    const id = userId
     const coachData = {
       firstName: data.first,
       lastName: data.last,
@@ -88,8 +91,8 @@ export const useCoachesStore = defineStore('coaches', () => {
       console.error(error)
     }
 
-    coaches.value.push({ ...coachData, id: userId })
+    coaches.value.push({ ...coachData, id: id })
   }
 
-  return { coaches, getCoaches, hasCoaches, isCoach, registerCoach, loadCoaches }
+  return { coaches, hasCoaches, isCoach, registerCoach, loadCoaches, setCoaches }
 })

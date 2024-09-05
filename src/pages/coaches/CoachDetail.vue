@@ -8,9 +8,9 @@ const props = defineProps({ id: { type: String, required: true } })
 const route = useRoute()
 
 const coachesStore = useCoachesStore()
-const { getCoaches } = coachesStore
+const { coaches } = coachesStore
 
-const selectedCoach = computed(() => getCoaches.find((coach) => coach.id === props.id))
+const selectedCoach = computed(() => coaches.find((coach) => coach.id === props.id))
 
 const data = computed(() => ({
   fullName: `${selectedCoach.value.firstName} ${selectedCoach.value.lastName}`,
