@@ -1,5 +1,6 @@
 <script setup>
 import { useCoachesStore } from '@/stores/coaches'
+import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -8,7 +9,7 @@ const props = defineProps({ id: { type: String, required: true } })
 const route = useRoute()
 
 const coachesStore = useCoachesStore()
-const { coaches } = coachesStore
+const { coaches } = storeToRefs(coachesStore)
 
 const selectedCoach = computed(() => coaches.find((coach) => coach.id === props.id))
 

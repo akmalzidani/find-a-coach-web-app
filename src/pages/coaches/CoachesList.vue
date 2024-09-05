@@ -3,19 +3,22 @@ import { useCoachesStore } from '@/stores/coaches'
 import CoachItem from '@/components/coaches/CoachItem.vue'
 import CoachFilter from '@/components/coaches/CoachFilter.vue'
 import { ref, computed, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
 
 const coachesStore = useCoachesStore()
-const { coaches, hasCoaches, isCoach, loadCoaches } = coachesStore
+const { loadCoaches } = coachesStore
+const { hasCoaches, isCoach } = storeToRefs(coachesStore)
 
-const isLoading = ref(true)
+const isLoading = ref()
 
 onMounted(async () => {
+  isLoading.value = true
   await loadCoaches()
   isLoading.value = false
 })
 
 const filteredCoaches = computed(() => {
-  return coaches.filter(
+  return coachesStore.coaches.filter(
     (coach) =>
       (activeFilters.value.frontend && coach.areas.includes('frontend')) ||
       (activeFilters.value.backend && coach.areas.includes('backend')) ||

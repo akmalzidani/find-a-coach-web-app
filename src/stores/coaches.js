@@ -1,10 +1,10 @@
 import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { useUsersStore } from './users'
 
 export const useCoachesStore = defineStore('coaches', () => {
   const usersStore = useUsersStore()
-  const { userId } = usersStore
+  const { userId } = storeToRefs(usersStore)
 
   //-------- state
   const coaches = ref([
@@ -30,7 +30,7 @@ export const useCoachesStore = defineStore('coaches', () => {
 
   //-------- getters
   const hasCoaches = computed(() => coaches.value.length > 0)
-  const isCoach = computed(() => coaches.value.some((coach) => coach.id === userId))
+  const isCoach = computed(() => coaches.value.some((coach) => coach.id === userId.value))
 
   //-------- actions
   const setCoaches = function (data) {
@@ -62,7 +62,7 @@ export const useCoachesStore = defineStore('coaches', () => {
       loadedCoaches.push(coach)
     }
     setCoaches(loadedCoaches)
-    console.log(userId)
+    console.log(userId.value)
     console.log('punya has coaches?', hasCoaches.value)
     console.log(isCoach.value)
     return loadedCoaches

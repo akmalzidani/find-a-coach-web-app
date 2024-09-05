@@ -1,14 +1,14 @@
 import { computed, ref } from 'vue'
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { useUsersStore } from './users'
 
 export const useRequestsStore = defineStore('requests', () => {
   const usersStore = useUsersStore()
-  const { userId } = usersStore
+  const { userId } = storeToRefs(usersStore)
 
   const requests = ref([])
 
-  const getRequests = computed(() => requests.value.filter((req) => req.coachId === userId))
+  const getRequests = computed(() => requests.value.filter((req) => req.coachId === userId.value))
   const hasRequests = computed(() => getRequests.value && getRequests.value.length > 0)
 
   function addRequest(data) {
