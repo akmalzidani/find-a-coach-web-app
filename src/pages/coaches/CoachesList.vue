@@ -7,18 +7,16 @@ import { storeToRefs } from 'pinia'
 
 const coachesStore = useCoachesStore()
 const { loadCoaches } = coachesStore
-const { hasCoaches, isCoach } = storeToRefs(coachesStore)
+const { coaches, hasCoaches, isCoach } = storeToRefs(coachesStore)
 
 const isLoading = ref()
 
 onMounted(async () => {
-  isLoading.value = true
-  await loadCoaches()
-  isLoading.value = false
+  loadData()
 })
 
 const filteredCoaches = computed(() => {
-  return coachesStore.coaches.filter(
+  return coaches.value.filter(
     (coach) =>
       (activeFilters.value.frontend && coach.areas.includes('frontend')) ||
       (activeFilters.value.backend && coach.areas.includes('backend')) ||
@@ -35,24 +33,30 @@ const activeFilters = ref({
 const setFilters = (updatedFilters) => {
   activeFilters.value = updatedFilters
 }
+
+const loadData = async () => {
+  isLoading.value = true
+  await loadCoaches()
+  isLoading.value = false
+}
 </script>
 
 <template>
-  <BaseCard>
-    <section v-if="!isLoading">
-      <CoachFilter @change-filter="setFilters" />
-    </section>
-    <section v-else>
-      <div>Loading...</div>
-    </section>
-    <section>
+  <section>
+    <CoachFilter @change-filter="setFilters" />
+  </section>
+  <section>
+    <BaseCard>
       <div class="controls">
-        <BaseButton mode="outline" @click="loadCoaches">Refresh</BaseButton>
+        <BaseButton mode="outline" @click="loadData">Refresh</BaseButton>
         <BaseButton v-if="!isCoach && !isLoading" isLink to="/register"
           >Register as Coach</BaseButton
         >
       </div>
-      <ul v-if="hasCoaches && !isLoading">
+      <div v-if="isLoading">
+        <BaseSpinner />
+      </div>
+      <ul v-else-if="hasCoaches && !isLoading">
         <CoachItem
           v-for="coach in filteredCoaches"
           :key="coach.id"
@@ -64,8 +68,8 @@ const setFilters = (updatedFilters) => {
         />
       </ul>
       <h3 v-else>No coaches found.</h3>
-    </section>
-  </BaseCard>
+    </BaseCard>
+  </section>
 </template>
 
 <style scoped>
