@@ -32,6 +32,8 @@ const data = computed(() => ({
   rate: selectedCoach.value.hourlyRate,
   description: selectedCoach.value.description
 }))
+
+const isContactPage = computed(() => route.path === data.value.contactLink)
 </script>
 
 <template>
@@ -58,7 +60,10 @@ const data = computed(() => ({
       <BaseCard>
         <header>
           <h2>Interested? Reach out now!</h2>
-          <BaseButton isLink :to="data.contactLink">Contact</BaseButton>
+          <BaseButton v-if="!isContactPage" isLink :to="data.contactLink"> Contact </BaseButton>
+          <BaseButton v-else @click="() => router.push(data.contactLink)" disabled>
+            Contact
+          </BaseButton>
         </header>
         <RouterView />
       </BaseCard>

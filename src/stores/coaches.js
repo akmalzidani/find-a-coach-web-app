@@ -9,6 +9,7 @@ export const useCoachesStore = defineStore('coaches', () => {
   const { userId } = storeToRefs(usersStore)
 
   //-------- state
+  const lastFetch = ref(null)
   const coaches = ref([
     {
       id: 'c1',
@@ -50,7 +51,19 @@ export const useCoachesStore = defineStore('coaches', () => {
     )
   })
 
+  const shouldUpdate = computed(() => {
+    if (!lastFetch.value) return true
+    const currentTime = new Date().getTime()
+    const timeSinceLastFetch = (currentTime - lastFetch.value) / 1000
+    return timeSinceLastFetch > 60
+  })
+
   //-------- actions
+
+  const setFetchTimestamp = () => {
+    lastFetch.value = new Date().getTime()
+  }
+
   const setFilters = (updatedFilters) => {
     activeFilters.value = updatedFilters
   }
@@ -59,7 +72,11 @@ export const useCoachesStore = defineStore('coaches', () => {
     coaches.value = data
   }
 
-  const loadCoaches = async function () {
+  const loadCoaches = async function (forceRefresh = false) {
+    if (!forceRefresh && !shouldUpdate.value) {
+      return
+    }
+
     const response = await fetch(`${baseURL}/coaches.json`)
     const responseData = await response.json()
 
@@ -82,6 +99,8 @@ export const useCoachesStore = defineStore('coaches', () => {
       loadedCoaches.push(coach)
     }
     setCoaches(loadedCoaches)
+    setFetchTimestamp()
+    console.log(shouldUpdate.value, lastFetch.value, new Date().getTime())
     return loadedCoaches
   }
   const registerCoach = async function (data) {

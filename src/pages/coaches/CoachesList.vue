@@ -16,11 +16,10 @@ onMounted(async () => {
   loadData()
 })
 
-const loadData = async () => {
+const loadData = async (refresh = false) => {
   isLoading.value = true
   try {
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    await loadCoaches()
+    await loadCoaches(refresh)
   } catch (err) {
     error.value = err.message || 'Something went wrong!'
   }
@@ -42,7 +41,7 @@ const handleError = () => {
   <section>
     <BaseCard>
       <div class="controls">
-        <BaseButton mode="outline" @click="loadData">Refresh</BaseButton>
+        <BaseButton mode="outline" @click="loadData(true)">Refresh</BaseButton>
         <BaseButton v-if="!isCoach && !isLoading" isLink to="/register"
           >Register as Coach</BaseButton
         >
