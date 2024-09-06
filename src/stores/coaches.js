@@ -100,7 +100,6 @@ export const useCoachesStore = defineStore('coaches', () => {
     }
     setCoaches(loadedCoaches)
     setFetchTimestamp()
-    console.log(shouldUpdate.value, lastFetch.value, new Date().getTime())
     return loadedCoaches
   }
   const registerCoach = async function (data) {
@@ -113,7 +112,7 @@ export const useCoachesStore = defineStore('coaches', () => {
       hourlyRate: data.rate
     }
 
-    const response = await fetch(`${baseURL}/coaches/${userId.value}.json`, {
+    const response = await fetch(`${baseURL}/coaches/${userId.value}.jso`, {
       method: 'PUT',
       body: JSON.stringify(coachData)
     })

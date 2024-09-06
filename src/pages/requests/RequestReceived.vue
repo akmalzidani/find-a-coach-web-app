@@ -30,28 +30,30 @@ const handleError = () => {
 </script>
 
 <template>
-  <BaseDialog :show="!!error" title="An error occured!" @close="handleError = null">
-    <p>{{ error }}</p></BaseDialog
-  >
-  <section>
-    <BaseCard>
-      <header>
-        <h2>Request Received</h2>
-      </header>
-      <div v-if="isLoading">
-        <BaseSpinner />
-      </div>
-      <ul v-else-if="hasRequests && !isLoading">
-        <RequestItem
-          v-for="request in getRequests"
-          :key="request.id"
-          :email="request.userEmail"
-          :message="request.message"
-        />
-      </ul>
-      <h3 v-else>You haven't received any requests yet!</h3>
-    </BaseCard>
-  </section>
+  <div>
+    <BaseDialog :show="!!error" title="An error occured!" @close="handleError = null">
+      <p>{{ error }}</p></BaseDialog
+    >
+    <section>
+      <BaseCard>
+        <header>
+          <h2>Request Received</h2>
+        </header>
+        <div v-if="isLoading">
+          <BaseSpinner />
+        </div>
+        <ul v-else-if="hasRequests && !isLoading">
+          <RequestItem
+            v-for="request in getRequests"
+            :key="request.id"
+            :email="request.userEmail"
+            :message="request.message"
+          />
+        </ul>
+        <h3 v-else>You haven't received any requests yet!</h3>
+      </BaseCard>
+    </section>
+  </div>
 </template>
 
 <style scoped>

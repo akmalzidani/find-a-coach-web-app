@@ -37,42 +37,44 @@ const isContactPage = computed(() => route.path === data.value.contactLink)
 </script>
 
 <template>
-  <div v-if="isLoading">
-    <BaseCard>
-      <div>
-        <BaseSpinner />
-      </div>
-    </BaseCard>
-  </div>
-  <div v-else-if="!selectedCoach">
-    <BaseCard>
-      <h2>Coach not found</h2>
-    </BaseCard>
-  </div>
-  <div v-else>
-    <section>
+  <div>
+    <div v-if="isLoading">
       <BaseCard>
-        <h2>{{ data.fullName }}</h2>
-        <h3>${{ data.rate }}/hour</h3>
+        <div>
+          <BaseSpinner />
+        </div>
       </BaseCard>
-    </section>
-    <section>
+    </div>
+    <div v-else-if="!selectedCoach">
       <BaseCard>
-        <header>
-          <h2>Interested? Reach out now!</h2>
-          <BaseButton v-if="!isContactPage" isLink :to="data.contactLink"> Contact </BaseButton>
-          <BaseButton v-else @click="() => router.push(data.contactLink)" disabled>
-            Contact
-          </BaseButton>
-        </header>
-        <RouterView />
+        <h2>Coach not found</h2>
       </BaseCard>
-    </section>
-    <section>
-      <BaseCard>
-        <BaseBadge v-for="area in data.areas" :key="area" :type="area" :title="area"> </BaseBadge>
-        <p>{{ data.description }}</p>
-      </BaseCard>
-    </section>
+    </div>
+    <div v-else>
+      <section>
+        <BaseCard>
+          <h2>{{ data.fullName }}</h2>
+          <h3>${{ data.rate }}/hour</h3>
+        </BaseCard>
+      </section>
+      <section>
+        <BaseCard>
+          <header>
+            <h2>Interested? Reach out now!</h2>
+            <BaseButton v-if="!isContactPage" isLink :to="data.contactLink"> Contact </BaseButton>
+            <BaseButton v-else @click="() => router.push(data.contactLink)" disabled>
+              Contact
+            </BaseButton>
+          </header>
+          <RouterView />
+        </BaseCard>
+      </section>
+      <section>
+        <BaseCard>
+          <BaseBadge v-for="area in data.areas" :key="area" :type="area" :title="area"> </BaseBadge>
+          <p>{{ data.description }}</p>
+        </BaseCard>
+      </section>
+    </div>
   </div>
 </template>
