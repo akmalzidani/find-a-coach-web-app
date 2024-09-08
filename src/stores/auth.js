@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 
@@ -9,6 +9,9 @@ export const useAuthStore = defineStore('auth', () => {
   const token = ref(null)
   const tokenExpiration = ref(null)
   const userId = ref(null)
+
+  // -------- getters
+  const isAuthenticated = computed(() => !!token.value)
 
   //-------- actions
   const setUser = function (data) {
@@ -123,5 +126,12 @@ export const useAuthStore = defineStore('auth', () => {
       })
   }
 
-  return { userId, login, signup, signupWithFirebaseMethod, loginWithFirebaseMethod }
+  return {
+    userId,
+    isAuthenticated,
+    login,
+    signup,
+    signupWithFirebaseMethod,
+    loginWithFirebaseMethod
+  }
 })

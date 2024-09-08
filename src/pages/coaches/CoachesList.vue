@@ -1,9 +1,13 @@
 <script setup>
-import { useCoachesStore } from '@/stores/coaches'
 import CoachItem from '@/components/coaches/CoachItem.vue'
 import CoachFilter from '@/components/coaches/CoachFilter.vue'
 import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useCoachesStore } from '@/stores/coaches'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+const { isAuthenticated } = storeToRefs(authStore)
 
 const coachesStore = useCoachesStore()
 const { loadCoaches, setFilters } = coachesStore
@@ -43,7 +47,8 @@ const handleError = () => {
       <BaseCard>
         <div class="controls">
           <BaseButton mode="outline" @click="loadData(true)">Refresh</BaseButton>
-          <BaseButton v-if="!isCoach && !isLoading" isLink to="/register"
+          <BaseButton isLink to="/auth" v-if="!isAuthenticated">Login</BaseButton>
+          <BaseButton v-if="isAuthenticated && !isCoach && !isLoading" isLink to="/register"
             >Register as Coach</BaseButton
           >
         </div>

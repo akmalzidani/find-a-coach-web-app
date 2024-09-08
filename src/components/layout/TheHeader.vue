@@ -1,12 +1,18 @@
-<script setup></script>
+<script setup>
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+const { isAuthenticated } = authStore
+</script>
 
 <template>
   <header>
     <nav>
       <h1><RouterLink to="/">Find a Coach</RouterLink></h1>
       <ul>
-        <li><RouterLink to="/coaches"> All Coaches </RouterLink></li>
-        <li><RouterLink to="/requests"> Requests </RouterLink></li>
+        <li><RouterLink to="/coaches">All Coaches</RouterLink></li>
+        <li v-if="isAuthenticated"><RouterLink to="/requests">Requests</RouterLink></li>
+        <li v-else><RouterLink to="/auth">Login</RouterLink></li>
       </ul>
     </nav>
   </header>
