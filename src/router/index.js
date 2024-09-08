@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 // import CoachesList from '@/pages/coaches/CoachesList.vue'
 // import ContactCoach from '@/pages/requests/ContactCoach.vue'
 // import RequestReceived from '@/pages/requests/RequestReceived.vue'
+import UserAuth from '@/pages/auth/UserAuth.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/requests',
       name: 'requests',
       component: () => import('../pages/requests/RequestReceived.vue')
+    },
+    {
+      path: '/auth',
+      name: 'auth',
+      component: UserAuth
     },
     {
       path: '/:notFound(.*)',
