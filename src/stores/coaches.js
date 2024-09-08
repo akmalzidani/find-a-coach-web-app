@@ -4,7 +4,7 @@ import { useAuthStore } from './auth'
 
 const baseURL = import.meta.env.VITE_BASE_URL
 const authStore = useAuthStore()
-const { userId } = storeToRefs(authStore)
+const { userId, token } = storeToRefs(authStore)
 
 export const useCoachesStore = defineStore('coaches', () => {
   //-------- state
@@ -111,7 +111,7 @@ export const useCoachesStore = defineStore('coaches', () => {
       hourlyRate: data.rate
     }
 
-    const response = await fetch(`${baseURL}/coaches/${userId.value}.jso`, {
+    const response = await fetch(`${baseURL}/coaches/${userId.value}.json?auth=${token.value}`, {
       method: 'PUT',
       body: JSON.stringify(coachData)
     })

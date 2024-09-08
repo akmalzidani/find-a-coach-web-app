@@ -4,7 +4,7 @@ import { useAuthStore } from './auth'
 
 const baseURL = import.meta.env.VITE_BASE_URL
 const authStore = useAuthStore()
-const { userId } = storeToRefs(authStore)
+const { userId, token } = storeToRefs(authStore)
 
 export const useRequestsStore = defineStore('requests', () => {
   //-------- state
@@ -42,7 +42,7 @@ export const useRequestsStore = defineStore('requests', () => {
 
   const loadRequests = async function () {
     const coachId = userId.value
-    const response = await fetch(`${baseURL}/requests/${coachId}.json`)
+    const response = await fetch(`${baseURL}/requests/${coachId}.json?auth=${token.value}`)
     const responseData = await response.json()
 
     if (!response.ok) {

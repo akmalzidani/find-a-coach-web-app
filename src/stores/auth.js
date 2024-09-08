@@ -17,8 +17,35 @@ export const useAuthStore = defineStore('auth', () => {
     tokenExpiration.value = data.tokenExpiration
   }
 
-  const login = function (userId) {
-    userId.value = userId
+  const login = async function (formInput) {
+    const response = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          email: formInput.email,
+          password: formInput.password,
+          returnSecureToken: true
+        })
+      }
+    )
+
+    const responseData = await response.json()
+    console.log(responseData)
+
+    if (!response.ok) {
+      console.log(responseData)
+      const error = new Error(
+        responseData.message || 'Failed to authenticate. Check your login data.'
+      )
+      throw error
+    }
+
+    setUser({
+      token: responseData.idToken,
+      userId: responseData.localId,
+      tokenExpiration: responseData.expiresIn
+    })
   }
 
   const signup = async function (formInput) {
@@ -52,7 +79,7 @@ export const useAuthStore = defineStore('auth', () => {
     })
   }
 
-  // Firebase Method Authentication
+  // Firebase Method Authentication -- harus initialize dulu di main.js
   const signupWithFirebaseMethod = function (formInput) {
     const auth = getAuth()
     createUserWithEmailAndPassword(auth, formInput.email, formInput.password)
