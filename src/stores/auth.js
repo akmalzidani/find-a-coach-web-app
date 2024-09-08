@@ -82,6 +82,14 @@ export const useAuthStore = defineStore('auth', () => {
     })
   }
 
+  const logout = function () {
+    setUser({
+      token: null,
+      userId: null,
+      tokenExpiration: null
+    })
+  }
+
   // Firebase Method Authentication -- harus initialize dulu di main.js
   const signupWithFirebaseMethod = function (formInput) {
     const auth = getAuth()
@@ -131,6 +139,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     login,
     signup,
+    logout,
     signupWithFirebaseMethod,
     loginWithFirebaseMethod
   }

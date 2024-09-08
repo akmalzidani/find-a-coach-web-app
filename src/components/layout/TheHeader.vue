@@ -1,8 +1,10 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth'
+import { storeToRefs } from 'pinia'
 
 const authStore = useAuthStore()
-const { isAuthenticated } = authStore
+const { logout } = authStore
+const { isAuthenticated } = storeToRefs(authStore)
 </script>
 
 <template>
@@ -13,6 +15,7 @@ const { isAuthenticated } = authStore
         <li><RouterLink to="/coaches">All Coaches</RouterLink></li>
         <li v-if="isAuthenticated"><RouterLink to="/requests">Requests</RouterLink></li>
         <li v-else><RouterLink to="/auth">Login</RouterLink></li>
+        <li v-if="isAuthenticated"><BaseButton @click="logout">Logout</BaseButton></li>
       </ul>
     </nav>
   </header>
