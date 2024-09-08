@@ -1,13 +1,12 @@
 import { computed, ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { useUsersStore } from './users'
+import { useAuthStore } from './auth'
 
 const baseURL = import.meta.env.VITE_BASE_URL
+const authStore = useAuthStore()
+const { userId } = storeToRefs(authStore)
 
 export const useRequestsStore = defineStore('requests', () => {
-  const usersStore = useUsersStore()
-  const { userId } = storeToRefs(usersStore)
-
   //-------- state
   const requests = ref([])
 

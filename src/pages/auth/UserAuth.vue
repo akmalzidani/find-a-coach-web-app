@@ -1,6 +1,9 @@
 <script setup>
-import { computed } from 'vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+const { login, signup } = authStore
 
 const formInput = ref({
   email: '',
@@ -9,12 +12,15 @@ const formInput = ref({
   mode: 'login'
 })
 
+const isLoading = ref(false)
+const error = ref(null)
+
 const submitButtonCaption = computed(() => (formInput.value.mode === 'login' ? 'Login' : 'Signup'))
 const swithcModeButtonCaption = computed(() =>
   formInput.value.mode === 'login' ? 'Signup Instead' : 'Login Instead'
 )
 
-const submitForm = () => {
+const submitForm = async () => {
   formInput.value.formIsValid = true
   if (
     formInput.value.email === '' ||
@@ -24,34 +30,60 @@ const submitForm = () => {
     formInput.value.formIsValid = false
     return
   }
+
+  isLoading.value = true
+
+  try {
+    if (formInput.value.mode === 'login') {
+      await login(formInput.value)
+    } else {
+      await signup(formInput.value)
+    }
+  } catch (err) {
+    error.value = err.message || 'Failed to authenticate. Please try again!'
+  }
+  isLoading.value = false
+
   console.log(formInput.value)
 }
 
 const switchAuthMode = () => {
   formInput.value.mode = formInput.value.mode === 'login' ? 'signup' : 'login'
 }
+
+const handleError = () => {
+  error.value = null
+}
 </script>
 
 <template>
-  <BaseCard>
-    <form @submit.prevent="submitForm">
-      <div class="form-control">
-        <label for="email">E-mail</label>
-        <input type="email" id="email" v-model.trim="formInput.email" />
-      </div>
-      <div class="form-control">
-        <label for="password">Password</label>
-        <input type="password" id="password" v-model.trim="formInput.password" />
-      </div>
-      <BaseButton>{{ submitButtonCaption }}</BaseButton>
-      <BaseButton type="button" mode="flat" @click="switchAuthMode">{{
-        swithcModeButtonCaption
-      }}</BaseButton>
-      <p v-if="!formInput.formIsValid">
-        Please enter a valid email and password (must be at least 6 characaters long).
-      </p>
-    </form>
-  </BaseCard>
+  <div>
+    <BaseDialog :show="!!error" title="An error occured!" @close="handleError">
+      <p>{{ error }}</p>
+    </BaseDialog>
+    <BaseDialog :show="isLoading" fixed title="Authenticating...">
+      <BaseSpinner />
+    </BaseDialog>
+    <BaseCard>
+      <form @submit.prevent="submitForm">
+        <div class="form-control">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" v-model.trim="formInput.email" />
+        </div>
+        <div class="form-control">
+          <label for="password">Password</label>
+          <input type="password" id="password" v-model.trim="formInput.password" />
+        </div>
+        <BaseButton>{{ submitButtonCaption }}</BaseButton>
+        <BaseButton type="button" mode="flat" @click="switchAuthMode">{{
+          swithcModeButtonCaption
+        }}</BaseButton>
+        <p v-if="!formInput.formIsValid">
+          Please enter a valid email and password (must be at least 6 characaters long).
+        </p>
+      </form>
+    </BaseCard>
+  </div>
 </template>
 
 <style scoped>
