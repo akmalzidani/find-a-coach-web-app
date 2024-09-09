@@ -1,13 +1,23 @@
 <script setup>
 import TheHeader from '@/components/layout/TheHeader.vue'
 import { useAuthStore } from './stores/auth'
-import { onMounted } from 'vue'
+import { watch, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const authStore = useAuthStore()
 const { autoLogin } = authStore
+const { didAutoLogout } = storeToRefs(authStore)
 
 onMounted(() => {
   autoLogin()
+})
+
+watch(didAutoLogout, (curValue, oldValue) => {
+  if (curValue && curValue !== oldValue) {
+    router.replace('/coaches')
+  }
 })
 </script>
 

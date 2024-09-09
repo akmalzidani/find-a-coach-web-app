@@ -3,12 +3,13 @@ import { defineStore } from 'pinia'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 
 const API_KEY = import.meta.env.VITE_API_KEY
+let timer
 
 export const useAuthStore = defineStore('auth', () => {
   //-------- state
   const token = ref(null)
-  const tokenExpiration = ref(null)
   const userId = ref(null)
+  const didAutoLogout = ref(false)
 
   // -------- getters
   const isAuthenticated = computed(() => !!token.value)
@@ -17,7 +18,7 @@ export const useAuthStore = defineStore('auth', () => {
   const setUser = function (data) {
     token.value = data.token
     userId.value = data.userId
-    tokenExpiration.value = data.tokenExpiration
+    didAutoLogout.value = false
   }
 
   const auth = async function (mode, formInput) {
@@ -45,13 +46,18 @@ export const useAuthStore = defineStore('auth', () => {
       throw error
     }
 
+    const expiresIn = +responseData.expiresIn * 1000
+    const expirationDate = new Date().getTime() + expiresIn
+
     localStorage.setItem('token', responseData.idToken)
     localStorage.setItem('userId', responseData.localId)
+    localStorage.setItem('tokenExpiration', expirationDate)
+
+    timer = setTimeout(autoLogout, expiresIn)
 
     setUser({
       token: responseData.idToken,
-      userId: responseData.localId,
-      tokenExpiration: responseData.expiresIn
+      userId: responseData.localId
     })
   }
 
@@ -66,22 +72,40 @@ export const useAuthStore = defineStore('auth', () => {
   const autoLogin = function () {
     const token = localStorage.getItem('token')
     const userId = localStorage.getItem('userId')
+    const tokenExpiration = localStorage.getItem('tokenExpiration')
+
+    const expiresIn = +tokenExpiration - new Date().getTime()
+
+    if (expiresIn < 0) {
+      return
+    }
+
+    timer = setTimeout(autoLogout, expiresIn)
 
     if (token && userId) {
       setUser({
         token: token,
-        userId: userId,
-        tokenExpiration: null
+        userId: userId
       })
     }
   }
 
   const logout = function () {
+    localStorage.removeItem('token')
+    localStorage.removeItem('userId')
+    localStorage.removeItem('tokenExpiration')
+
+    clearTimeout(timer)
+
     setUser({
       token: null,
-      userId: null,
-      tokenExpiration: null
+      userId: null
     })
+  }
+
+  const autoLogout = function () {
+    logout()
+    didAutoLogout.value = true
   }
 
   // Firebase Method Authentication -- harus initialize dulu di main.js
@@ -131,6 +155,7 @@ export const useAuthStore = defineStore('auth', () => {
   return {
     userId,
     isAuthenticated,
+    didAutoLogout,
     login,
     signup,
     logout,
