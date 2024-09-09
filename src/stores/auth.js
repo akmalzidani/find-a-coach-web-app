@@ -20,29 +20,33 @@ export const useAuthStore = defineStore('auth', () => {
     tokenExpiration.value = data.tokenExpiration
   }
 
-  const login = async function (formInput) {
-    const response = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          email: formInput.email,
-          password: formInput.password,
-          returnSecureToken: true
-        })
-      }
-    )
+  const auth = async function (mode, formInput) {
+    const modeAuth = mode
+    let url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`
+    if (modeAuth === 'signup') {
+      url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`
+    }
+
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({
+        email: formInput.email,
+        password: formInput.password,
+        returnSecureToken: true
+      })
+    })
 
     const responseData = await response.json()
-    console.log(responseData)
 
     if (!response.ok) {
-      console.log(responseData)
       const error = new Error(
         responseData.message || 'Failed to authenticate. Check your login data.'
       )
       throw error
     }
+
+    localStorage.setItem('token', responseData.idToken)
+    localStorage.setItem('userId', responseData.localId)
 
     setUser({
       token: responseData.idToken,
@@ -51,35 +55,25 @@ export const useAuthStore = defineStore('auth', () => {
     })
   }
 
+  const login = async function (formInput) {
+    return auth('login', formInput)
+  }
+
   const signup = async function (formInput) {
-    const response = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          email: formInput.email,
-          password: formInput.password,
-          returnSecureToken: true
-        })
-      }
-    )
+    return auth('signup', formInput)
+  }
 
-    const responseData = await response.json()
-    console.log(responseData)
+  const autoLogin = function () {
+    const token = localStorage.getItem('token')
+    const userId = localStorage.getItem('userId')
 
-    if (!response.ok) {
-      console.log(responseData)
-      const error = new Error(
-        responseData.message || 'Failed to authenticate. Check your login data.'
-      )
-      throw error
+    if (token && userId) {
+      setUser({
+        token: token,
+        userId: userId,
+        tokenExpiration: null
+      })
     }
-
-    setUser({
-      token: responseData.idToken,
-      userId: responseData.localId,
-      tokenExpiration: responseData.expiresIn
-    })
   }
 
   const logout = function () {
@@ -140,6 +134,7 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     signup,
     logout,
+    autoLogin,
     signupWithFirebaseMethod,
     loginWithFirebaseMethod
   }
