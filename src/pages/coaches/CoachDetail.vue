@@ -1,7 +1,7 @@
 <script setup>
 import { useCoachesStore } from '@/stores/coaches'
 import { storeToRefs } from 'pinia'
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const props = defineProps({ id: { type: String, required: true } })

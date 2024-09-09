@@ -1,6 +1,6 @@
-import { ref, computed } from 'vue'
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { defineStore } from 'pinia'
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { computed, ref } from 'vue'
 
 const API_KEY = import.meta.env.VITE_API_KEY
 let timer

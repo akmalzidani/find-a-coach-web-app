@@ -1,9 +1,9 @@
 <script setup>
 import TheHeader from '@/components/layout/TheHeader.vue'
-import { useAuthStore } from './stores/auth'
-import { watch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
+import { onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from './stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()

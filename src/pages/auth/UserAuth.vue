@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
@@ -47,8 +47,6 @@ const submitForm = async () => {
     error.value = err.message || 'Failed to authenticate. Please try again!'
   }
   isLoading.value = false
-
-  console.log(formInput.value)
 }
 
 const switchAuthMode = () => {

@@ -1,10 +1,10 @@
 <script setup>
-import CoachItem from '@/components/coaches/CoachItem.vue'
 import CoachFilter from '@/components/coaches/CoachFilter.vue'
-import { ref, onMounted } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useCoachesStore } from '@/stores/coaches'
+import CoachItem from '@/components/coaches/CoachItem.vue'
 import { useAuthStore } from '@/stores/auth'
+import { useCoachesStore } from '@/stores/coaches'
+import { storeToRefs } from 'pinia'
+import { onMounted, ref } from 'vue'
 
 const authStore = useAuthStore()
 const { isAuthenticated } = storeToRefs(authStore)

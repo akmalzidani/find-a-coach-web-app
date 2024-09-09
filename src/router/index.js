@@ -1,12 +1,7 @@
-import { createRouter, createWebHistory } from 'vue-router'
-// import CoachDetail from '@/pages/coaches/CoachDetail.vue'
-// import CoachRegistration from '@/pages/coaches/CoachRegistration.vue'
-// import CoachesList from '@/pages/coaches/CoachesList.vue'
-// import ContactCoach from '@/pages/requests/ContactCoach.vue'
-// import RequestReceived from '@/pages/requests/RequestReceived.vue'
 import UserAuth from '@/pages/auth/UserAuth.vue'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
