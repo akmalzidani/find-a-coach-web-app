@@ -1,7 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { useRoute, useRouter } from 'vue-router'
 
+const route = useRoute()
+const router = useRouter()
 const authStore = useAuthStore()
 const { login, signup } = authStore
 
@@ -39,6 +42,7 @@ const submitForm = async () => {
     } else {
       await signup(formInput.value)
     }
+    router.replace(`/${route.query.redirect || 'coaches'}`)
   } catch (err) {
     error.value = err.message || 'Failed to authenticate. Please try again!'
   }

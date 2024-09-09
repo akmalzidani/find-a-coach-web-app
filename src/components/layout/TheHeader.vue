@@ -1,10 +1,18 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const authStore = useAuthStore()
 const { logout } = authStore
 const { isAuthenticated } = storeToRefs(authStore)
+
+const logoutHandler = () => {
+  logout()
+  router.replace('/coaches')
+}
 </script>
 
 <template>
@@ -15,7 +23,9 @@ const { isAuthenticated } = storeToRefs(authStore)
         <li><RouterLink to="/coaches">All Coaches</RouterLink></li>
         <li v-if="isAuthenticated"><RouterLink to="/requests">Requests</RouterLink></li>
         <li v-else><RouterLink to="/auth">Login</RouterLink></li>
-        <li v-if="isAuthenticated"><BaseButton @click="logout">Logout</BaseButton></li>
+        <li v-if="isAuthenticated">
+          <BaseButton @click="logoutHandler">Logout</BaseButton>
+        </li>
       </ul>
     </nav>
   </header>

@@ -47,7 +47,9 @@ const handleError = () => {
       <BaseCard>
         <div class="controls">
           <BaseButton mode="outline" @click="loadData(true)">Refresh</BaseButton>
-          <BaseButton isLink to="/auth" v-if="!isAuthenticated">Login</BaseButton>
+          <BaseButton isLink to="/auth?redirect=register" v-if="!isAuthenticated"
+            >Login to Register as Coach</BaseButton
+          >
           <BaseButton v-if="isAuthenticated && !isCoach && !isLoading" isLink to="/register"
             >Register as Coach</BaseButton
           >
